@@ -1,0 +1,16 @@
+package com.huiztech.muyq.elasticsearch;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+/**
+ * @author muyuanqiang
+ */
+@SpringBootApplication
+public class SpringBootElasticsearchApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(SpringBootElasticsearchApplication.class, args);
+    }
+
+}
