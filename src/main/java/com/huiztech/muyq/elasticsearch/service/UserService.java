@@ -4,11 +4,16 @@ import com.huiztech.muyq.elasticsearch.domain.QUser;
 import com.huiztech.muyq.elasticsearch.domain.User;
 import com.huiztech.muyq.elasticsearch.repository.UserRepository;
 import com.querydsl.core.QueryResults;
+import com.querydsl.core.types.Predicate;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -75,5 +80,25 @@ public class UserService {
                 .limit(pageable.getPageSize())
                 //获取结果，该结果封装了实体集合、分页的信息，需要这些信息直接从该对象里面拿取即可
                 .fetchResults();
+    }
+
+    public List<User> findByBirthdayBetween(Date start, Date end) {
+        QUser user = QUser.user;
+        return jpaQueryFactory
+                .selectFrom(user)
+                .where(
+                        user.birthday.between(start, end)
+                )
+                .fetch();
+    }
+
+    public Page<User> findByPage() {
+        QUser user = QUser.user;
+        Predicate predicate = user.userId.intValue().gt(0)
+                .and(user.username.like("%b%"));
+        //分页排序
+        Sort sort = Sort.by(Sort.Direction.ASC, "userId");
+        PageRequest pageRequest = PageRequest.of(0, 10, sort);
+        return userRepository.findAll(predicate, pageRequest);
     }
 }
